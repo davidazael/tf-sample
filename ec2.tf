@@ -13,13 +13,14 @@ resource "aws_instance" "web-server-instance" {
 
   provisioner "file" {
     source      = "./index.html"
-    destination = "/var/www/html/index.html"
+    destination = "/tmp/index.html"
 
     connection {
       type        = "ssh"
       user        = "ec2-user"
       private_key = file("./comcastKey.pem")
       host        = self.public_dns
+      timeout     = "2m"
     }
   }
 
@@ -36,6 +37,7 @@ resource "aws_instance" "web-server-instance" {
                 sudo ./make-dummy-cert localhost.crt
                 cd ~
                 sudo sed -i -e '/^SSLCertificateKeyFile/s//#&/' /etc/httpd/conf.d/ssl.conf
+                sudo mv /tmp/index.html /var/www/html/index.html
                 sudo systemctl restart httpd
                 sleep 2s
                 sudo systemctl start httpd && sudo systemctl enable httpd
