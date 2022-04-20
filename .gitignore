@@ -30,3 +30,8 @@ override.tf.json
 
 *.hcl
 *.pem
+
+## Python Ignore
+.venv
+.venv/*
+*.venv
